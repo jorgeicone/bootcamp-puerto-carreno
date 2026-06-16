@@ -60,7 +60,6 @@
   .progress-label{font-size:.74rem;color:var(--muted);margin-top:5px}
 
   .layout{display:flex;flex:1;max-width:1100px;width:100%;margin:0 auto}
-  /* sidebar */
   .nav{width:270px;flex-shrink:0;padding:18px 12px;}
   .nav .day{font-size:.72rem;font-weight:800;letter-spacing:.6px;color:var(--green-2);
     text-transform:uppercase;margin:14px 10px 8px}
@@ -88,7 +87,6 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   @media(max-width:760px){.grid2{grid-template-columns:1fr}}
 
-  /* tables */
   .ptable{display:flex;flex-direction:column;gap:14px}
   .prow{border:1px solid var(--border);border-radius:12px;padding:14px;background:#fcfdf8}
   .prow .rt{font-weight:700;color:var(--green-2);font-size:.9rem;margin-bottom:8px}
@@ -98,7 +96,6 @@
   .addrow{background:var(--bg);border:1.5px dashed var(--green);color:var(--green-2);border-radius:12px;
     padding:12px;font-weight:700;width:100%}
 
-  /* AI panel */
   .ai-box{margin-top:18px;border:1.5px solid #ffe2b8;background:#fff9ef;border-radius:var(--radius);padding:18px}
   .ai-box h4{color:var(--accent-2);font-size:.95rem;display:flex;align-items:center;gap:8px}
   .ai-box p.desc{color:var(--muted);font-size:.86rem;margin:6px 0 12px}
@@ -111,7 +108,6 @@
   .ai-copy{margin-top:10px;background:#fff;border:1.5px solid var(--accent);color:var(--accent-2);
     border-radius:10px;padding:9px 14px;font-weight:700;font-size:.85rem;width:auto}
 
-  /* footer nav */
   .navbtns{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
   .navbtns .btn{width:auto;min-width:130px}
   .save-flag{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--green-deep);
@@ -119,7 +115,6 @@
     opacity:0;transition:.3s;z-index:50;pointer-events:none}
   .save-flag.show{opacity:1}
 
-  /* mobile nav toggle */
   .nav-toggle{display:none}
   @media(max-width:860px){
     .layout{flex-direction:column}
@@ -133,7 +128,6 @@
 </head>
 <body>
 
-<!-- ===================== LOGIN ===================== -->
 <section id="login">
   <div class="login-card">
     <div class="badge">PROYECTO CLUA · TEJIDO DE LAZOS</div>
@@ -155,7 +149,6 @@
   </div>
 </section>
 
-<!-- ===================== APP ===================== -->
 <main id="app">
   <div class="topbar">
     <div class="brand"><b>Mi Ruta Emprendedora</b><span>Bootcamp Puerto Carreño</span></div>
@@ -184,9 +177,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script>
-/* =====================================================================
-   ESTRUCTURA DE LA CARTILLA (módulos y campos)
-===================================================================== */
 const MODULES = [
   { key:'perfil', day:1, icon:'🪪', title:'Aquí comienza tu historia',
     kicker:'Día 1 · Tú', intro:'Tus datos de contacto. Más que un registro, es el inicio de tu camino.',
@@ -321,13 +311,10 @@ const MODULES = [
     ]},
 ];
 
-/* =====================================================================
-   ESTADO Y SUPABASE
-===================================================================== */
 const cfg = window.PC_CONFIG;
 let sb=null, session=null, profile=null;
 let current = 'perfil';
-let data = {};            // data[moduleKey] = {fieldKey:value}
+let data = {};
 let saveTimer=null;
 
 function arr(a){ return Array.isArray(a)? a.filter(x=>x&&x.trim()).map((x,i)=>`${i+1}) ${x}`).join('  ') : ''; }
@@ -343,7 +330,6 @@ function initSb(){
 function emailFromCode(code){ return code.toLowerCase()+'@'+cfg.EMAIL_DOMAIN; }
 function showMsg(t,type){ const m=$('#login-msg'); m.textContent=t; m.className='msg '+(type||''); }
 
-/* ---------- LOGIN ---------- */
 async function login(){
   const code = $('#in-code').value.trim().toUpperCase();
   const pin  = $('#in-pin').value;
@@ -352,10 +338,8 @@ async function login(){
   const btn=$('#btn-login'); btn.disabled=true; btn.textContent='Entrando...';
   const email = emailFromCode(code);
 
-  // 1) intentar iniciar sesión
   let { data:s, error } = await sb.auth.signInWithPassword({ email, password:pin });
 
-  // 2) si no existe el usuario, registrarlo (primera vez)
   if(error){
     const { data:su, error:eup } = await sb.auth.signUp({
       email, password:pin, options:{ data:{ codigo:code } }
@@ -364,12 +348,14 @@ async function login(){
       showMsg(traducirError(eup.message), 'err');
       btn.disabled=false; btn.textContent='Entrar'; return;
     }
-    // signUp inicia sesión automáticamente si la confirmación de email está desactivada
     s = su;
-    // pequeño respiro para que el trigger cree el perfil
     await new Promise(r=>setTimeout(r,600));
   }
   session = s.session || (await sb.auth.getSession()).data.session;
+  if(!session){
+    showMsg('No se pudo iniciar sesión. Revisa tu clave.','err');
+    btn.disabled=false; btn.textContent='Entrar'; return;
+  }
   await afterLogin();
   btn.disabled=false; btn.textContent='Entrar';
 }
@@ -385,7 +371,6 @@ async function afterLogin(){
   const { data:p } = await sb.from('bootcamp_pc_profiles').select('*').eq('id', session.user.id).single();
   profile = p;
   if(profile && profile.rol==='admin'){
-    // si entra el admin, lo mandamos al panel
     window.location.href = 'admin.html'; return;
   }
   await loadAll();
@@ -401,14 +386,12 @@ async function loadAll(){
   data={};
   const { data:rows } = await sb.from('bootcamp_pc_responses').select('module_key,data').eq('user_id', session.user.id);
   (rows||[]).forEach(r=> data[r.module_key]=r.data||{});
-  // perfil viene también de la tabla de perfiles
   data.perfil = Object.assign({
     nombre:profile?.nombre||'', edad:profile?.edad||'',
     contacto:profile?.contacto||'', municipio:profile?.municipio||''
   }, data.perfil||{});
 }
 
-/* ---------- NAV ---------- */
 function buildNav(){
   const c=$('#nav-inner'); c.innerHTML='';
   [1,2].forEach(day=>{
@@ -447,7 +430,6 @@ function updateProgress(){
   });
 }
 
-/* ---------- RENDER MODULE ---------- */
 function val(mod,k){ return (data[mod]&&data[mod][k]); }
 function setVal(mod,k,v){ data[mod]=data[mod]||{}; data[mod][k]=v; queueSave(mod); updateProgress(); }
 
@@ -468,7 +450,6 @@ function renderModule(key){
 
   if(m.ai) c.appendChild(renderAI(m));
 
-  // nav buttons
   const idx=MODULES.findIndex(x=>x.key===key);
   const nb=document.createElement('div'); nb.className='navbtns';
   const prev=document.createElement('button'); prev.className='btn btn-ghost'; prev.textContent='← Anterior';
@@ -547,7 +528,6 @@ function renderField(mod,f){
   return wrap;
 }
 
-/* ---------- IA ---------- */
 function renderAI(m){
   const box=document.createElement('div'); box.className='ai-box';
   box.innerHTML=`<h4>🤖 Asistente Claude</h4><p class="desc">La inteligencia artificial usa lo que escribiste para darte ideas. Puedes copiar lo que te sirva a tus respuestas.</p>`;
@@ -579,7 +559,6 @@ async function askClaude(system, user){
   return j.text;
 }
 
-/* ---------- GUARDADO ---------- */
 function queueSave(mod){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>saveModule(mod), 800);
@@ -603,8 +582,16 @@ async function saveModule(mod){
 }
 function flashSaved(){ const f=$('#save-flag'); f.classList.add('show'); setTimeout(()=>f.classList.remove('show'),1200); }
 
-/* ---------- INIT ---------- */
 $('#btn-login').onclick=login;
 $('#in-pin').addEventListener('keydown',e=>{ if(e.key==='Enter') login(); });
 $('#btn-logout').onclick=async()=>{ await sb.auth.signOut(); location.reload(); };
-$('#nav-toggle').onclick=()=>$('#nav-inner').class
+$('#nav-toggle').onclick=()=>$('#nav-inner').classList.toggle('open');
+
+(async function(){
+  if(!initSb()) return;
+  const { data:{session:s} } = await sb.auth.getSession();
+  if(s){ session=s; await afterLogin(); }
+})();
+</script>
+</body>
+</html>
