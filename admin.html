@@ -3,83 +3,118 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Panel del Facilitador · Bootcamp Puerto Carreño</title>
+<title>Panel del Facilitador · Territorio Vivo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--green:#7cb518;--green-2:#5a8a10;--green-deep:#33500a;--lime:#a4c61a;--bg:#f3f7ea;
-    --card:#fff;--border:#e3ebd3;--ink:#1e2a12;--muted:#6a7a55;--accent:#f4960a;--shadow:0 6px 24px rgba(60,90,20,.08)}
+  :root{
+    --navy:#050d1f; --navy-2:#0a1730; --panel:rgba(255,255,255,.045); --panel-2:rgba(255,255,255,.07);
+    --border:rgba(255,255,255,.1); --orange:#f26a1b; --orange-2:#d8541a; --lime:#a6d32a; --cyan:#36d4ff;
+    --text:#eef3f9; --muted:#90a1b8; --ok:#43d17a;
+    --display:'Baloo 2',system-ui,sans-serif; --body:'Nunito',system-ui,sans-serif;
+  }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+  body{font-family:var(--body);background:var(--navy);color:var(--text);min-height:100vh;overflow-x:hidden}
+  h1,h2,h3,b,.display{font-family:var(--display)}
+  button{font-family:inherit;cursor:pointer}
   .hidden{display:none!important}
-  .inp{width:100%;background:#fafdf3;border:1.6px solid var(--border);border-radius:12px;padding:14px 16px;font-size:1.05rem;outline:none}
-  .inp:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(124,181,24,.15)}
-  .btn{border:none;border-radius:12px;font-weight:700;padding:14px 22px;background:var(--green);color:#fff;cursor:pointer;width:100%}
-  .btn:hover{background:var(--green-2)}
-
-  #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
-    background:linear-gradient(160deg,var(--lime),var(--green) 60%,var(--green-2))}
-  .login-card{background:#fff;border-radius:24px;box-shadow:0 20px 50px rgba(40,60,10,.25);width:100%;max-width:400px;padding:36px 28px}
-  .login-card .badge{display:inline-block;background:var(--bg);color:var(--green-2);font-weight:700;font-size:.72rem;padding:6px 14px;border-radius:50px;margin-bottom:16px}
-  .login-card h1{font-size:1.4rem;color:var(--green-deep);margin-bottom:4px}
-  .login-card p{color:var(--muted);font-size:.9rem;margin-bottom:22px}
-  .login-card label{display:block;font-size:.85rem;font-weight:600;color:var(--green-deep);margin:0 0 6px}
-  .login-card .field{margin-bottom:14px}
-  .msg{font-size:.9rem;border-radius:10px;padding:10px;margin-top:12px;display:none}
-  .msg.err{background:#fdeaea;color:#b5341f;display:block}
-
-  #app{display:none;min-height:100vh}
-  .topbar{background:var(--green);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:14px 22px}
-  .topbar b{font-size:1.05rem}
-  .topbar small{display:block;opacity:.9;font-size:.74rem}
-  .icon-btn{background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:10px;padding:8px 14px;font-weight:600;cursor:pointer}
-  .wrap{max-width:1080px;margin:0 auto;padding:22px 18px 60px}
-
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:22px}
-  .stat{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
-  .stat .n{font-size:2rem;font-weight:800;color:var(--green-deep)}
-  .stat .l{font-size:.82rem;color:var(--muted)}
-
-  .toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-  .toolbar input{flex:1;min-width:180px}
-  .toolbar button{width:auto;background:#fff;color:var(--green-2);border:1.6px solid var(--border)}
-
-  table{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
-  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);font-size:.9rem}
-  th{background:#f0f5e4;color:var(--green-deep);font-size:.78rem;text-transform:uppercase;letter-spacing:.4px}
-  tr:hover td{background:#fbfdf6;cursor:pointer}
-  .pill{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.76rem;font-weight:700}
-  .bar{height:7px;background:#eef3e2;border-radius:50px;overflow:hidden;width:90px}
-  .bar > div{height:100%;background:linear-gradient(90deg,var(--lime),var(--green))}
-
-  .overlay{position:fixed;inset:0;background:rgba(20,30,8,.5);display:none;align-items:flex-start;justify-content:center;padding:30px 16px;z-index:60;overflow:auto}
-  .overlay.show{display:flex}
-  .modal{background:#fff;border-radius:20px;max-width:760px;width:100%;padding:26px}
-  .modal h2{color:var(--green-deep);margin-bottom:2px}
-  .modal .meta{color:var(--muted);font-size:.88rem;margin-bottom:16px}
-  .modal .close{float:right;background:var(--bg);border:none;border-radius:10px;padding:8px 14px;font-weight:700;cursor:pointer;color:var(--green-2)}
-  .mod-block{border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
-  .mod-block h3{font-size:.95rem;color:var(--green-2);margin-bottom:8px}
-  .mod-block .kv{font-size:.88rem;margin-bottom:6px}
-  .mod-block .kv b{color:var(--green-deep)}
+  #stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .inp{width:100%;background:rgba(255,255,255,.06);border:1.5px solid var(--border);border-radius:12px;
+    padding:13px 15px;font-size:1rem;color:var(--text);outline:none;font-family:var(--body);font-weight:600}
+  .inp::placeholder{color:#6f819a}
+  .inp:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(242,106,27,.15)}
+  .btn{border:none;border-radius:13px;font-family:var(--display);font-weight:700;padding:14px 22px;
+    background:linear-gradient(135deg,var(--orange),var(--orange-2));color:#fff;cursor:pointer;width:100%;font-size:1.02rem;
+    box-shadow:0 10px 22px rgba(242,106,27,.35);transition:.15s}
+  .btn:hover{filter:brightness(1.06)} .btn:active{transform:scale(.98)}
+  #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;z-index:1}
+  .login-card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+    border:1px solid var(--border);border-radius:22px;box-shadow:0 30px 70px rgba(0,0,0,.5);
+    width:100%;max-width:400px;padding:34px 28px;text-align:center;backdrop-filter:blur(8px);animation:rise .6s cubic-bezier(.2,.7,.2,1)}
+  @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .emblem{width:58px;height:58px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;
+    background:radial-gradient(circle at 30% 30%,#bfe24a,var(--lime));box-shadow:0 8px 22px rgba(166,211,42,.4)}
+  .emblem svg{width:32px;height:32px;color:#08311f}
+  .login-card h1{font-size:1.35rem;font-weight:800;margin-bottom:4px}
+  .login-card .sub{color:var(--muted);font-size:.92rem;margin-bottom:22px;font-weight:600}
+  .login-card label{display:block;font-size:.74rem;font-weight:800;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin:0 0 7px;text-align:left}
+  .field{margin-bottom:14px}
+  .badgebar{font-family:var(--display);font-size:.72rem;font-weight:700;letter-spacing:1px;color:var(--muted);margin-bottom:18px}
+  .badgebar .o{color:var(--orange)}
+  .msg{font-size:.9rem;border-radius:10px;padding:10px;margin-top:12px;display:none;font-weight:700}
+  .msg.err{background:rgba(229,75,53,.16);color:#ff9d8e;display:block}
+  #app{display:none;min-height:100vh;position:relative;z-index:1}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)}
+  .topbar .brand{display:flex;align-items:center;gap:12px}
+  .topbar .b-emblem{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 30%,#bfe24a,var(--lime))}
+  .topbar .b-emblem svg{width:20px;height:20px;color:#08311f}
+  .topbar b{font-size:1.05rem;display:block;line-height:1}
+  .topbar small{color:var(--muted);font-size:.72rem;font-weight:700;letter-spacing:.5px}
+  .icon-btn{background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 15px;font-weight:800;font-family:var(--display)}
+  .icon-btn:active{transform:scale(.96)}
+  .wrap{max-width:1120px;margin:0 auto;padding:24px 20px 70px}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:24px}
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:20px;position:relative;overflow:hidden}
+  .stat::after{content:"";position:absolute;right:-16px;top:-16px;width:64px;height:64px;border-radius:50%;opacity:.16}
+  .stat.s1::after{background:var(--lime)} .stat.s2::after{background:var(--cyan)} .stat.s3::after{background:var(--orange)}
+  .stat .n{font-family:var(--display);font-size:2.4rem;font-weight:800;line-height:1}
+  .stat.s1 .n{color:var(--lime)} .stat.s2 .n{color:var(--cyan)} .stat.s3 .n{color:var(--orange)}
+  .stat .l{font-size:.82rem;color:var(--muted);margin-top:4px;font-weight:700}
+  .toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .toolbar input{flex:1;min-width:200px}
+  .toolbar button{width:auto;background:var(--panel);border:1px solid var(--border);color:var(--text);box-shadow:none;
+    font-family:var(--display);border-radius:12px;padding:12px 18px;font-weight:700}
+  .toolbar button:active{transform:scale(.97)}
+  .tablewrap{background:var(--panel);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.06);font-size:.92rem}
+  th{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;font-weight:800;background:rgba(255,255,255,.03)}
+  tr:last-child td{border-bottom:none}
+  tbody tr:hover td{background:rgba(255,255,255,.04);cursor:pointer}
+  .pill{display:inline-block;padding:4px 11px;border-radius:50px;font-size:.74rem;font-weight:800;font-family:var(--display);
+    background:rgba(242,106,27,.16);color:#ffb083}
+  .bar{height:8px;background:rgba(255,255,255,.08);border-radius:50px;overflow:hidden;width:96px}
+  .bar>div{height:100%;background:linear-gradient(90deg,var(--lime),var(--cyan))}
   .empty{color:var(--muted);font-style:italic;font-size:.86rem}
+  .overlay{position:fixed;inset:0;background:rgba(2,8,18,.7);display:none;align-items:flex-start;justify-content:center;padding:30px 16px;z-index:60;overflow:auto;backdrop-filter:blur(4px)}
+  .overlay.show{display:flex}
+  .modal{background:linear-gradient(180deg,#0c1a33,#081224);border:1px solid var(--border);border-radius:20px;max-width:780px;width:100%;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .modal h2{margin-bottom:2px;font-size:1.4rem}
+  .modal .meta{color:var(--muted);font-size:.88rem;margin-bottom:18px;font-weight:600}
+  .modal .close{float:right;background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-weight:800;cursor:pointer;color:var(--text);font-family:var(--display)}
+  .mod-block{border:1px solid var(--border);border-radius:14px;padding:15px;margin-bottom:12px;background:rgba(255,255,255,.03)}
+  .mod-block h3{font-size:.95rem;color:var(--lime);margin-bottom:8px}
+  .mod-block .kv{font-size:.9rem;margin-bottom:6px;color:#d6e0ec}
+  .mod-block .kv b{color:#fff}
 </style>
 </head>
 <body>
-
+<canvas id="stars"></canvas>
+<svg width="0" height="0" style="position:absolute"><symbol id="leaf" viewBox="0 0 64 64">
+  <path d="M32 60 V30" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M32 36 C19 36 11 27 11 14 C25 14 32 23 32 36 Z" fill="currentColor"/>
+  <path d="M32 31 C45 31 53 22 53 9 C39 9 32 18 32 31 Z" fill="currentColor" opacity=".82"/>
+</symbol></svg>
 <section id="login">
   <div class="login-card">
-    <div class="badge">PANEL DEL FACILITADOR</div>
-    <h1>Bootcamp Puerto Carreño</h1>
-    <p>Acceso solo para el facilitador.</p>
-    <div class="field"><label>Código admin</label><input id="in-code" class="inp" value="ADMIN-PC" /></div>
-    <div class="field"><label>Clave</label><input id="in-pin" class="inp" type="password" placeholder="Tu clave admin" /></div>
-    <button class="btn" id="btn-login">Entrar</button>
+    <div class="emblem"><svg><use href="#leaf"/></svg></div>
+    <div class="badgebar">PROYECTO CLUA <span class="o">×</span> TERRITORIO VIVO</div>
+    <h1>Panel del Facilitador</h1>
+    <p class="sub">Ingresa tu clave para ver el avance del grupo.</p>
+    <input id="in-code" type="hidden" value="ADMIN-PC" />
+    <div class="field"><label>Contraseña</label><input id="in-pin" class="inp" type="password" placeholder="Tu clave de facilitador" /></div>
+    <button class="btn" id="btn-login">Ingresar →</button>
     <div id="msg" class="msg"></div>
   </div>
 </section>
-
 <main id="app">
   <div class="topbar">
-    <div><b>Panel del Facilitador</b><small>Proyecto CLUA · Tejido de lazos</small></div>
+    <div class="brand">
+      <div class="b-emblem"><svg><use href="#leaf"/></svg></div>
+      <div><b>Panel del Facilitador</b><small>BOOTCAMP PUERTO CARREÑO · TERRITORIO VIVO</small></div>
+    </div>
     <button class="icon-btn" id="btn-logout">Salir</button>
   </div>
   <div class="wrap">
@@ -88,116 +123,17 @@
       <input id="search" class="inp" placeholder="Buscar por código, nombre o municipio..." />
       <button id="btn-refresh">↻ Actualizar</button>
     </div>
-    <table>
-      <thead><tr><th>Código</th><th>Nombre</th><th>Municipio</th><th>Módulo actual</th><th>Avance</th><th>Actualizado</th></tr></thead>
-      <tbody id="rows"></tbody>
-    </table>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Código</th><th>Nombre</th><th>Municipio</th><th>Módulo actual</th><th>Avance</th><th>Actualizado</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
   </div>
 </main>
-
 <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=2"></script>
-<script>
-const cfg=window.PC_CONFIG;
-const MOD_TITLES={perfil:'Perfil',ikigai:'Ikigai',linea_tiempo:'Línea de tiempo',recursos:'Recursos',
-  plan_vida:'Plan de vida',ideacion:'Ideación',producto:'Producto/Servicio',propuesta_valor:'Propuesta de valor',
-  marketing:'Marketing',pitch:'Pitch',cierre:'Cierre'};
-const TOTAL_MODULES=11;
-let sb=null, session=null, profiles=[], byUser={};
-const $=s=>document.querySelector(s);
-
-function init(){
-  if(!cfg||cfg.SUPABASE_URL.includes('TU-PROYECTO')){ $('#msg').textContent='Falta configurar config.js'; $('#msg').className='msg err'; return false; }
-  sb=supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY); return true;
-}
-async function login(){
-  const code=$('#in-code').value.trim().toUpperCase(), pin=$('#in-pin').value;
-  const email=code.toLowerCase()+'@'+cfg.EMAIL_DOMAIN;
-  let {data:s,error}=await sb.auth.signInWithPassword({email,password:pin});
-  if(error){
-    const {error:e2}=await sb.auth.signUp({email,password:pin,options:{data:{codigo:code}}});
-    if(e2){ $('#msg').textContent='No se pudo entrar: '+e2.message; $('#msg').className='msg err'; return; }
-    await new Promise(r=>setTimeout(r,600));
-    s=(await sb.auth.getSession()).data;
-  }
-  session=s.session||(await sb.auth.getSession()).data.session;
-  const {data:p}=await sb.from('bootcamp_pc_profiles').select('rol').eq('id',session.user.id).single();
-  if(!p||p.rol!=='admin'){ $('#msg').textContent='Este código no es de facilitador.'; $('#msg').className='msg err'; await sb.auth.signOut(); return; }
-  $('#login').classList.add('hidden'); $('#app').style.display='block';
-  await loadData();
-}
-async function loadData(){
-  const {data:ps}=await sb.from('bootcamp_pc_profiles').select('*').eq('rol','emprendedor').order('codigo');
-  profiles=ps||[];
-  const {data:rs}=await sb.from('bootcamp_pc_responses').select('user_id,module_key,data');
-  byUser={};
-  (rs||[]).forEach(r=>{ byUser[r.user_id]=byUser[r.user_id]||{}; byUser[r.user_id][r.module_key]=r.data; });
-  renderStats(); renderRows();
-}
-function cellHas(x){
-  if(!x) return false;
-  if(typeof x==='string') return !!x.trim();
-  if(typeof x==='object') return Object.values(x).some(y=> y && String(y).trim());
-  return !!String(x).trim();
-}
-function modulesDone(uid){
-  const d=byUser[uid]||{}; let n=0;
-  Object.keys(d).forEach(k=>{ const has=Object.values(d[k]||{}).some(v=>Array.isArray(v)?v.some(cellHas):(v&&String(v).trim())); if(has)n++; });
-  return n;
-}
-function renderStats(){
-  const activos=profiles.filter(p=>modulosDoneSafe(p.id)>0).length;
-  const conPitch=profiles.filter(p=>{const d=byUser[p.id];return d&&d.pitch&&(d.pitch.pitch_final||'').trim();}).length;
-  $('#stats').innerHTML=`
-    <div class="stat"><div class="n">${profiles.length}</div><div class="l">Emprendedores registrados</div></div>
-    <div class="stat"><div class="n">${activos}</div><div class="l">Han empezado a trabajar</div></div>
-    <div class="stat"><div class="n">${conPitch}</div><div class="l">Con pitch escrito</div></div>`;
-}
-function modulosDoneSafe(uid){ try{return modulesDone(uid);}catch(e){return 0;} }
-function renderRows(){
-  const q=($('#search').value||'').toLowerCase();
-  const rows=$('#rows'); rows.innerHTML='';
-  profiles.filter(p=>!q||[p.codigo,p.nombre,p.municipio].some(x=>(x||'').toLowerCase().includes(q)))
-  .forEach(p=>{
-    const done=modulosDoneSafe(p.id), pct=Math.round(done/TOTAL_MODULES*100);
-    const tr=document.createElement('tr'); tr.onclick=()=>openDetail(p);
-    tr.innerHTML=`<td><b>${p.codigo}</b></td><td>${p.nombre||'<span class="empty">—</span>'}</td>
-      <td>${p.municipio||'<span class="empty">—</span>'}</td>
-      <td><span class="pill" style="background:#eef5df;color:#5a8a10">${MOD_TITLES[p.modulo_actual]||'—'}</span></td>
-      <td><div style="display:flex;align-items:center;gap:8px"><div class="bar"><div style="width:${pct}%"></div></div><small>${done}/${TOTAL_MODULES}</small></div></td>
-      <td><small>${p.updated_at?new Date(p.updated_at).toLocaleString('es-CO',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'—'}</small></td>`;
-    rows.appendChild(tr);
-  });
-}
-function openDetail(p){
-  const d=byUser[p.id]||{};
-  let html=`<button class="close" onclick="document.getElementById('overlay').classList.remove('show')">Cerrar ✕</button>
-    <h2>${p.codigo} · ${p.nombre||'Sin nombre'}</h2>
-    <div class="meta">${p.municipio||''} ${p.edad?('· '+p.edad+' años'):''} ${p.contacto?('· '+p.contacto):''}</div>`;
-  const order=['ikigai','linea_tiempo','recursos','plan_vida','ideacion','producto','propuesta_valor','marketing','pitch','cierre'];
-  order.forEach(k=>{
-    const md=d[k]; if(!md) return;
-    const kvs=Object.entries(md).map(([kk,vv])=>{
-      let txt=Array.isArray(vv)?vv.filter(x=>x&&(x.c0||x.c1||(typeof x==='string'&&x.trim()))).map(x=>typeof x==='string'?x:Object.values(x).join(' · ')).join(' | '):vv;
-      if(!txt||!String(txt).trim()) return '';
-      return `<div class="kv"><b>${kk}:</b> ${String(txt).slice(0,400)}</div>`;
-    }).filter(Boolean).join('');
-    if(kvs) html+=`<div class="mod-block"><h3>${MOD_TITLES[k]||k}</h3>${kvs}</div>`;
-  });
-  if(!order.some(k=>d[k])) html+='<p class="empty">Aún no ha registrado información.</p>';
-  $('#modal').innerHTML=html; $('#overlay').classList.add('show');
-}
-$('#overlay').onclick=e=>{ if(e.target.id==='overlay') $('#overlay').classList.remove('show'); };
-$('#btn-login').onclick=login;
-$('#in-pin').addEventListener('keydown',e=>{if(e.key==='Enter')login();});
-$('#btn-logout').onclick=async()=>{await sb.auth.signOut();location.reload();};
-$('#search').oninput=renderRows;
-$('#btn-refresh').onclick=loadData;
-(async function(){ if(!init())return; const {data:{session:s}}=await sb.auth.getSession();
-  if(s){ session=s; const {data:p}=await sb.from('bootcamp_pc_profiles').select('rol').eq('id',s.user.id).single();
-    if(p&&p.rol==='admin'){ $('#login').classList.add('hidden'); $('#app').style.display='block'; await loadData(); } } })();
-</script>
+<script src="admin.js?v=10"></script>
 </body>
 </html>
